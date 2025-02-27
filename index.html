@@ -146,6 +146,7 @@
       width: 100%;
       max-width: 300px;
       text-align: center;
+      display: none; /* Oculto por defecto */
     }
 
     @keyframes fadeIn {
@@ -267,34 +268,50 @@
     // Evento para guardar imagen
     saveButton.addEventListener('click', () => {
       if (processedImage.src && !processedImage.src.includes('imagebam')) {
+        // Crear un enlace temporal para descargar la imagen
         const link = document.createElement('a');
         link.href = processedImage.src;
+
+        // Asignar un nombre al archivo descargado
         link.download = 'imagen-procesada.png';
+
+        // Simular un clic en el enlace para iniciar la descarga
         link.click();
+
+        // Liberar la URL del objeto Blob después de la descarga
+        URL.revokeObjectURL(processedImage.src);
       } else {
         alert('No hay imagen procesada para guardar.');
       }
     });
 
-    // Inicialización del anuncio de Start.io
-    (function() {
-      var startAppId = '200325360'; // Tu ID de Start.io
-      var adContainer = document.getElementById('startio-ad');
+    // Función para decidir si mostrar el anuncio aleatoriamente
+    function showAdRandomly() {
+      const adContainer = document.getElementById('ad-container');
+      const shouldShowAd = Math.random() < 0.5; // 50% de probabilidad de mostrar el anuncio
 
-      // Cargar el SDK de Start.io
-      var script = document.createElement('script');
-      script.src = 'https://cdn.start.io/sdk/startapp.js';
-      script.async = true;
-      script.onload = function() {
-        // Inicializar el anuncio
-        startapp.init(startAppId, 'banner', {
-          container: adContainer,
-          size: 'BANNER',
-          placement: 'bottom'
-        });
-      };
-      document.body.appendChild(script);
-    })();
+      if (shouldShowAd) {
+        adContainer.style.display = 'block'; // Mostrar el contenedor del anuncio
+
+        // Cargar el SDK de Start.io
+        var startAppId = '200325360'; // Tu ID de Start.io
+        var script = document.createElement('script');
+        script.src = 'https://cdn.start.io/sdk/startapp.js';
+        script.async = true;
+        script.onload = function () {
+          // Inicializar el anuncio
+          startapp.init(startAppId, 'banner', {
+            container: document.getElementById('startio-ad'),
+            size: 'BANNER',
+            placement: 'bottom',
+          });
+        };
+        document.body.appendChild(script);
+      }
+    }
+
+    // Llamar a la función para mostrar el anuncio aleatoriamente
+    showAdRandomly();
   </script>
 </body>
 </html>
